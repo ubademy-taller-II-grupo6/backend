@@ -1,4 +1,4 @@
-from dao.userDao import UserDao
+from dao.user_dao import UserDao
 
 if __name__=='__main__':
     dao = UserDao()

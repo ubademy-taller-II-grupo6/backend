@@ -1,5 +1,6 @@
 import psycopg2
-from resources.json_tools import read_json_file
+from utils.json_utils import read_json_file
+
 
 
 class UserDao:
@@ -11,7 +12,7 @@ class UserDao:
             self.set_default_connection()
 
     def set_default_connection(self):
-        db_data = read_json_file("config/db.json")
+        db_data = read_json_file("../config/db.json")
 
         connection = psycopg2.connect(
             host=db_data["host"],
