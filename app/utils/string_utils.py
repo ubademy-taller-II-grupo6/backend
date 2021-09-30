@@ -1,5 +1,5 @@
 import re
-import constants.regular_expresions as regular_expressions
+import app.constants.regular_expresions as regular_expressions
 
 
 def contains_lower_case(string):
