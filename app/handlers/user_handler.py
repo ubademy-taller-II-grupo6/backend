@@ -1,7 +1,7 @@
 from app.dataAccess.user_dao import UserDao
 from app.utils.string_utils import is_email, is_text, contains_upper_case, contains_lower_case, contains_number
 from app.exceptions.user_exceptions import InvalidEmailException, InvalidNameException, \
-    InvalidPasswordFormatException
+    InvalidPasswordFormatException, UserAlreadyExistException
 
 
 class UserHandler:
@@ -29,15 +29,20 @@ class UserHandler:
     @staticmethod
     def validate_user_password(user_password):
         if (
-            len(user_password) < 8
-            or not contains_lower_case(user_password)
-            or not contains_upper_case(user_password)
-            or not contains_number(user_password)
+                len(user_password) < 8
+                or not contains_lower_case(user_password)
+                or not contains_upper_case(user_password)
+                or not contains_number(user_password)
         ):
             raise InvalidPasswordFormatException()
+
+    def validate_user_existence(self,user_email):
+        if self.userDao.exist_user(user_email):
+            raise UserAlreadyExistException(user_email)
 
     def validate_new_user_data(self, user_name, user_lastname, user_email, user_password):
         self.validate_user_name(user_name)
         self.validate_user_lastname(user_lastname)
         self.validate_user_email(user_email)
         self.validate_user_password(user_password)
+        self.validate_user_existence(user_email)
