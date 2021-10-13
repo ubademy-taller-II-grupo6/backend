@@ -1,4 +1,6 @@
 import psycopg2
+from psycopg2.extras import RealDictCursor
+
 from app.utils.json_utils import read_json_file
 
 
@@ -17,24 +19,30 @@ class UserDao:
             host=db_data["host"],
             database=db_data["database"],
             user=db_data["user"],
-            password=db_data["password"]
+            password=db_data["password"],
+            cursor_factory=RealDictCursor
         )
 
         self.connection = connection
 
     def insert_user(self, user_name, user_lastname, user_email, user_password):
         cur = self.connection.cursor()
-        query = "INSERT INTO users(user_name,user_lastname,user_email,user_password,user_wallet,user_is_locked) VALUES (%s,%s,%s,%s,%s,%s)"
+        query = "INSERT INTO users(user_name,user_lastname,user_email,user_password,user_wallet,user_blocked) VALUES (%s,%s,%s,%s,%s,%s)"
         cur.execute(query, (user_name, user_lastname, user_email, user_password, 0.0, False))
         self.connection.commit()
 
+
     def find_user_by_email(self, user_email):
         cur = self.connection.cursor()
-        query = "SELECT * FROM users where user_email = %s"
+        query = "SELECT *  FROM users where user_email = %s"
         cur.execute(query, (user_email,))
-        return cur.fetchone()
+        result = cur.fetchone()
+        return result
 
-    def exist_user(self, user_email):
+
+    def exists_user(self, user_email):
         if not self.find_user_by_email(user_email):
             return False
         return True
+
+

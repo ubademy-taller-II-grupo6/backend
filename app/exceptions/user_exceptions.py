@@ -32,10 +32,10 @@ class InvalidPasswordFormatException(Exception):
 
 
 class UserBlockedException(Exception):
-    message = "El usuario se encuentra bloquead"
+    message = "El usuario se encuentra bloqueado"
 
     def __str__(self):
-        return UsersBlockedException.message
+        return self.message
 
 
 class UserAlreadyExistException(Exception):
@@ -43,4 +43,12 @@ class UserAlreadyExistException(Exception):
         self.message = f'Ya existe un usuario registrado con el email  {user_email}'
 
     def __str__(self):
-        return UsersBlockedException.message
+        return self.message
+
+
+class IncorrectLoginDataException(Exception):
+    def __init__(self):
+        self.message = f'El usuario o la contraseña son incorrectos'
+
+    def __str__(self):
+        return self.message

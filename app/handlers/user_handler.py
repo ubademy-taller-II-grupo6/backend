@@ -1,7 +1,7 @@
 from app.dataAccess.user_dao import UserDao
 from app.utils.string_utils import is_email, is_text, contains_upper_case, contains_lower_case, contains_number
 from app.exceptions.user_exceptions import InvalidEmailException, InvalidNameException, \
-    InvalidPasswordFormatException, UserAlreadyExistException
+    InvalidPasswordFormatException, UserAlreadyExistException, IncorrectLoginDataException, UserBlockedException
 
 
 class UserHandler:
@@ -10,6 +10,7 @@ class UserHandler:
     def create_new_user(self, user_name, user_lastname, user_email, user_password):
         self.validate_new_user_data(user_name, user_lastname, user_email, user_password)
         self.userDao.insert_user(user_name, user_lastname, user_email, user_password)
+        return "Usuario creado con éxito"
 
     @staticmethod
     def validate_user_name(user_name):
@@ -27,22 +28,39 @@ class UserHandler:
             raise InvalidEmailException(user_email)
 
     @staticmethod
-    def validate_user_password(user_password):
+    def validate_user_password_match(real_user_password, given_user_password):
+        return real_user_password == given_user_password
+
+    @staticmethod
+    def validate_user_password_format(user_password):
         if (
                 len(user_password) < 8
                 or not contains_lower_case(user_password)
                 or not contains_upper_case(user_password)
                 or not contains_number(user_password)
+                or not contains_number(user_password)
         ):
             raise InvalidPasswordFormatException()
 
-    def validate_user_existence(self,user_email):
-        if self.userDao.exist_user(user_email):
+    @staticmethod
+    def validate_user_blocked(blocked):
+        if blocked:
+            raise UserBlockedException()
+
+    def validate_user_existence(self, user_email):
+        if self.userDao.exists_user(user_email):
             raise UserAlreadyExistException(user_email)
+
+    def user_login(self, user_email, user_password):
+        user_data = self.userDao.find_user_by_email(user_email)
+        if not user_data or not self.validate_user_password_match(user_data['user_password'], user_password):
+            raise IncorrectLoginDataException
+        self.validate_user_blocked(user_data['user_blocked'])
+        return "logueo exitoso"
 
     def validate_new_user_data(self, user_name, user_lastname, user_email, user_password):
         self.validate_user_name(user_name)
         self.validate_user_lastname(user_lastname)
         self.validate_user_email(user_email)
-        self.validate_user_password(user_password)
+        self.validate_user_password_format(user_password)
         self.validate_user_existence(user_email)
