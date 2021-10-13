@@ -6,6 +6,7 @@ class UserRegistrationModel(BaseModel):
     lastname: str
     email: str
     password: str
+    profile: int
 
 
 class UserLoginModel(BaseModel):

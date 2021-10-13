@@ -8,5 +8,9 @@ CREATE TABLE users(
     user_password VARCHAR(255) NOT NULL,
     user_wallet Float NOT NULL,
     user_blocked  Boolean NOT NULL,
-    primary key (user_id)
+    user_profile INT NOT NULL,
+    primary key (user_id),
+    CONSTRAINT fk_profile
+        FOREIGN KEY(user_profile)
+            REFERENCES user_profiles(profile_id)
 )

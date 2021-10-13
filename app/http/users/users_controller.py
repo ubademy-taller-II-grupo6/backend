@@ -9,7 +9,7 @@ api = Api()
 
 @router.post('/users', status_code=status.HTTP_201_CREATED)
 async def create_new_user(user: UserRegistrationModel):
-    return api.create_new_user(user.name, user.lastname, user.email, user.password)
+    return api.create_new_user(user.name, user.lastname, user.email, user.password, user.profile)
 
 
 @router.post('/users/login', status_code=status.HTTP_200_OK)
@@ -17,8 +17,6 @@ async def user_login(user: UserLoginModel):
     return api.user_login(user.email, user.password)
 
 
-
-
-
-
-
+@router.get('/users/profiles', status_code=status.HTTP_200_OK)
+async def user_login():
+    return api.get_user_profiles()
