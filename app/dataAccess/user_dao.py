@@ -12,7 +12,7 @@ class UserDao:
             self.set_default_connection()
 
     def set_default_connection(self):
-        db_data = read_json_file("config/remote_db.json")
+        db_data = read_json_file("app/config/remote_db.json")
 
         connection = psycopg2.connect(
             host=db_data["host"],

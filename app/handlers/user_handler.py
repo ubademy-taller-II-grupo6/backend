@@ -67,9 +67,9 @@ class UserHandler:
             raise IncorrectLoginDataException
         self.validate_user_blocked(user_data['user_blocked'])
         result = {
-            "user_name": user_data['user_name'],
-            "user_lastname": user_data['user_lastname'],
-            "user_email": user_data['user_email'],
-            "user_profile": user_data['profile_name']
+            "name": user_data['user_name'],
+            "lastname": user_data['user_lastname'],
+            "email": user_data['user_email'],
+            "profile": user_data['profile_name']
         }
         return result

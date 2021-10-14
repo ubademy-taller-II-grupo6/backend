@@ -1,7 +1,6 @@
 import re
 import app.constants.regular_expresions as regular_expressions
 
-
 def contains_lower_case(string):
     if not re.search(regular_expressions.LOWER_CASE, string):
         return False
@@ -30,3 +29,8 @@ def is_text(string):
     if not re.search(regular_expressions.TEXT, string):
         return False
     return True
+
+
+def get_dictionary_from_message(message):
+    dictionary = {"message": message}
+    return dictionary

@@ -10,34 +10,35 @@ from app.exceptions.user_exceptions import (
     UserAlreadyExistException,
     IncorrectLoginDataException
 )
+from app.utils.string_utils import get_dictionary_from_message
 
 
-async def invalid_email_exception_handler(request: Request, exc: InvalidEmailException):
-    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=exc.message)
+async def invalid_email_exception_handler(request: Request, exc: InvalidEmailException, ):
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=get_dictionary_from_message(exc.message))
 
 
 async def invalid_name_exception_handler(request: Request, exc: InvalidNameException):
-    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=exc.message)
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=get_dictionary_from_message(exc.message))
 
 
 async def invalid_lastname_exception_handler(request: Request, exc: InvalidLastnameException):
-    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=exc.message)
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=get_dictionary_from_message(exc.message))
 
 
 async def invalid_password_format_exception_handler(request: Request, exc: InvalidPasswordFormatException):
-    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=exc.message)
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=get_dictionary_from_message(exc.message))
 
 
 async def user_blocked_exception_handler(request: Request, exc:  UserBlockedException):
-    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=exc.message)
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=get_dictionary_from_message(exc.message))
 
 
 async def user_already_exist_exception_handler(request: Request, exc:  UserAlreadyExistException):
-    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=exc.message)
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=get_dictionary_from_message(exc.message))
 
 
 async def user_incorrect_login_data_exception_handler(request: Request, exc:  IncorrectLoginDataException):
-    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=exc.message)
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=get_dictionary_from_message(exc.message))
 
 
 def add_user_exception_handlers(app: FastAPI):

@@ -1,5 +1,3 @@
-DROP TABLE users;
-
 CREATE TABLE users(
     user_id SERIAL,
     user_name VARCHAR(255) NOT NULL,
