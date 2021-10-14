@@ -1,0 +1,6 @@
+{
+  "host":"localhost",
+  "database":"backend-taller2",
+  "user":"postgres",
+  "password":"98684"
+}
