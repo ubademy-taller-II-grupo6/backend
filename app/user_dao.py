@@ -49,3 +49,10 @@ class UserDao:
         query = "DELETE FROM users WHERE user_id = %s"
         cur.execute(query, (user_id,))
         self.connection.commit()
+
+    def get_profiles(self):
+        cur = self.connection.cursor()
+        query = "SELECT *  FROM user_profiles"
+        cur.execute(query)
+        result = cur.fetchall()
+        return result

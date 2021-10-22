@@ -16,5 +16,5 @@ def is_text(string):
 
 def create_message_response(message):
     return {
-        "message":message
+        "message": message
     }

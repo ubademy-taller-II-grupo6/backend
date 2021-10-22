@@ -47,6 +47,9 @@ class UserHandler:
         response = create_message_response("Usuario eliminado con éxito")
         return response
 
+    def get_profiles(self):
+        return self.user_dao.get_profiles()
+
     @staticmethod
     def validate_user_name(user_name):
         if not is_text(user_name):

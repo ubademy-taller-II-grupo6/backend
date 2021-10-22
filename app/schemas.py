@@ -9,3 +9,8 @@ class UserDataModel(BaseModel):
 
 class MessageModel(BaseModel):
     message: str
+
+
+class ProfileModel(BaseModel):
+    profile_id: int
+    profile_name: str

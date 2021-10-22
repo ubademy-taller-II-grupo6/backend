@@ -1,7 +1,8 @@
 from app.user_dao import UserDao
 from app.user_handler import UserHandler
 from fastapi import APIRouter, status
-from app.schemas import UserDataModel, MessageModel
+from app.schemas import UserDataModel, MessageModel, ProfileModel
+from typing import List
 
 router = APIRouter(tags=["users"])
 user_handler = UserHandler(UserDao())
@@ -20,6 +21,16 @@ async def create_user(
 
 
 # READ
+
+@router.get(
+    '/users/profiles',
+    status_code=status.HTTP_200_OK,
+    response_model=List[ProfileModel]
+)
+async def get_profiles():
+    return user_handler.get_profiles()
+
+
 @router.get(
     '/users/{user_id}',
     status_code=status.HTTP_200_OK,
