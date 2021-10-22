@@ -22,22 +22,6 @@ class InvalidLastnameException(Exception):
         return self.message
 
 
-class InvalidPasswordFormatException(Exception):
-    def __init__(self):
-        self.message = f'La contraseña debe contener al menos 8 caracteres incluyendo al menos una letra minuscula, ' \
-                       f'una letra mayuscula y un número '
-
-    def __str__(self):
-        return self.message
-
-
-class UserBlockedException(Exception):
-    message = "El usuario se encuentra bloqueado"
-
-    def __str__(self):
-        return self.message
-
-
 class UserAlreadyExistException(Exception):
     def __init__(self, user_email: str):
         self.message = f'Ya existe un usuario registrado con el email  {user_email}'
@@ -46,9 +30,9 @@ class UserAlreadyExistException(Exception):
         return self.message
 
 
-class IncorrectLoginDataException(Exception):
-    def __init__(self):
-        self.message = f'El usuario o la contraseña son incorrectos'
+class InvalidUserIdException(Exception):
+    def __init__(self, user_id):
+        self.message = f'No existe el ususario con el id {user_id}'
 
     def __str__(self):
         return self.message

@@ -1,9 +1,7 @@
-import os
-
 from fastapi import FastAPI
-from app.http.users.user_exception_handlers import add_user_exception_handlers
+from app.exception_handlers import add_user_exception_handlers
 import uvicorn
-from app.http.users.users_controller import router
+from app.api import router
 
 app = FastAPI()
 add_user_exception_handlers(app)
@@ -11,5 +9,4 @@ app.include_router(router)
 
 
 if __name__ == '__main__':
-    uvicorn.run('main:app', host='0.0.0.0', port=int(os.environ.get('PORT')), reload=True)
-
+    uvicorn.run('main:app')
