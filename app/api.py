@@ -73,6 +73,17 @@ async def get_user(
     return user_handler.get_user(user_id)
 
 
+@router.get(
+    '/users/login/{user_id}',
+    status_code=status.HTTP_200_OK,
+    response_model=UserDataModel,
+)
+async def login(
+        user_id: str
+):
+    return user_handler.login(user_id)
+
+
 # UPDATE
 @router.put(
     '/users/{user_id}',

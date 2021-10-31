@@ -62,6 +62,15 @@ class InvalidUserEmail(Exception):
         return self.message
 
 
+class UserBlockedException(Exception):
+    def __init__(self):
+        self.message = f'El usuario se encuentra bloqueado'
+
+    def __str__(self):
+        return self.message
+
+
+
 
 
 

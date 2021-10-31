@@ -131,3 +131,15 @@ class UserDao:
         cur.execute(query, (user_id,))
         self.connection.commit()
         return True
+
+    def get_blocking_status(self, user_id):
+        cur = self.connection.cursor()
+        query = "SELECT * FROM userstatus where user_id=%s"
+        cur.execute(query, (user_id,))
+        data = cur.fetchone()
+        if not data:
+            raise InvalidUserIdException(user_id)
+        return data['blocked']
+
+
+

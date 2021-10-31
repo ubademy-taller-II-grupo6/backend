@@ -1,4 +1,5 @@
-from app.exceptions import InvalidNameException, InvalidUserIdException, InvalidEmailException, InvalidLastnameException
+from app.exceptions import InvalidNameException, InvalidUserIdException, InvalidEmailException, \
+    InvalidLastnameException, UserBlockedException
 from app.utils import is_text, is_email, create_message_response
 
 
@@ -57,6 +58,12 @@ class UserHandler:
 
     def get_users_list(self):
         return self.user_dao.get_users_list()
+
+    def login(self, user_id):
+        blocked = self.user_dao.get_blocking_status(user_id)
+        if blocked:
+            raise UserBlockedException()
+        return self.get_user(user_id)
 
     @staticmethod
     def validate_user_name(user_name):

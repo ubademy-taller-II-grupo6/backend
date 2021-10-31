@@ -7,7 +7,10 @@ from app.exceptions import (
     InvalidNameException,
     InvalidLastnameException,
     UserAlreadyExistException,
-    InvalidUserIdException, InvalidProfileIdException, ProfileAlreadyAssociatedException
+    InvalidUserIdException,
+    InvalidProfileIdException,
+    ProfileAlreadyAssociatedException,
+    UserBlockedException
 )
 
 
@@ -39,6 +42,10 @@ async def user_profile_already_associated_exception_handler(request: Request, ex
     return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=create_message_response(exc.message))
 
 
+async def user_blocked_exception_handler(request: Request, exc: UserBlockedException):
+    return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content=create_message_response(exc.message))
+
+
 def add_user_exception_handlers(app: FastAPI):
     app.add_exception_handler(InvalidEmailException, invalid_email_exception_handler)
     app.add_exception_handler(InvalidNameException, invalid_name_exception_handler)
@@ -47,3 +54,4 @@ def add_user_exception_handlers(app: FastAPI):
     app.add_exception_handler(InvalidUserIdException, user_invalid_user_id_exception_handler)
     app.add_exception_handler(InvalidProfileIdException, user_invalid_invalid_profile_id_exception_handler)
     app.add_exception_handler(ProfileAlreadyAssociatedException, user_profile_already_associated_exception_handler)
+    app.add_exception_handler(UserBlockedException, user_blocked_exception_handler)
