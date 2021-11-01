@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from app.exception_handlers import add_user_exception_handlers
 import uvicorn

@@ -86,7 +86,7 @@ class UserDao:
 
     def get_profiles(self):
         cur = self.connection.cursor()
-        query = "SELECT *  FROM user_profiles"
+        query = "SELECT *  FROM profiles"
         cur.execute(query)
         result = cur.fetchall()
         return result
@@ -98,6 +98,7 @@ class UserDao:
             cur.execute(query, (user_id, profile_id))
         except psycopg2.errors.ForeignKeyViolation as e:
             if 'user_id' in e.pgerror:
+                self.connection.rollback()
                 raise InvalidUserIdException(user_id)
             elif 'profile_id' in e.pgerror:
                 self.connection.rollback()
