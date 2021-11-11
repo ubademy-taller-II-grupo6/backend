@@ -18,3 +18,12 @@ def create_message_response(message):
     return {
         "message": message
     }
+
+
+def to_bool(string):
+    string = str(string).upper()
+    if string == "TRUE":
+        return True
+    if string == "FALSE":
+        return False
+    return None

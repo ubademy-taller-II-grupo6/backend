@@ -38,30 +38,6 @@ class InvalidUserIdException(Exception):
         return self.message
 
 
-class InvalidProfileIdException(Exception):
-    def __init__(self, profile_id):
-        self.message = f'No existe un perfil con el id {profile_id}'
-
-    def __str__(self):
-        return self.message
-
-
-class ProfileAlreadyAssociatedException(Exception):
-    def __init__(self):
-        self.message = f'El peril ya se encuentra asociado al usuario'
-
-    def __str__(self):
-        return self.message
-
-
-class InvalidUserEmail(Exception):
-    def __init__(self, user_email):
-        self.message = f'No hay ningún usuario asociado al correo electrónico {user_email}'
-
-    def __str__(self):
-        return self.message
-
-
 class UserBlockedException(Exception):
     def __init__(self):
         self.message = f'El usuario se encuentra bloqueado'

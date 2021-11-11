@@ -1,4 +1,4 @@
-from app.exceptions import InvalidNameException, InvalidUserIdException, InvalidEmailException, \
+from app.exceptions import InvalidNameException, InvalidEmailException, \
     InvalidLastnameException, UserBlockedException
 from app.utils import is_text, is_email, create_message_response
 
@@ -12,58 +12,8 @@ class UserHandler:
         self.validate_user_lastname(user_lastname)
         self.validate_user_email(user_email)
         self.user_dao.create_user(user_name, user_lastname, user_email)
-        response = create_message_response("El ususario se creó con éxito")
+        response = create_message_response("El usuario se creó con éxito")
         return response
-
-    def get_user(self, user_id):
-        user = self.user_dao.get_user(user_id)
-        response = {
-            "name": user['user_name'],
-            "lastname": user['user_lastname'],
-            "email": user['user_email']
-        }
-        return response
-
-    def update_user(self, user_id, user_name, user_lastname, user_email):
-        user = self.get_user(user_id)
-        if not user:
-            raise InvalidUserIdException(user_id)
-        self.validate_user_name(user_name)
-        self.validate_user_lastname(user_lastname)
-        self.validate_user_email(user_email)
-        self.user_dao.update_user(user_id, user_name, user_lastname, user_email)
-        response = create_message_response("El usuario fue actualizado con éxito")
-        return response
-
-    def get_profiles(self):
-        return self.user_dao.get_profiles()
-
-    def add_profile_to_user(self, user_id, profile_id):
-        self.user_dao.add_profile_to_user(user_id, profile_id)
-        response = create_message_response("Perfil agregado con éxito")
-        return response
-
-    def get_user_profiles(self, user_id):
-        return self.user_dao.get_user_profiles(user_id)
-
-    def block_user(self, user_id):
-        self.user_dao.block_user(user_id)
-        response = create_message_response("El usuario ha sido bloqueado")
-        return response
-
-    def unblock_user(self, user_id):
-        self.user_dao.unblock_user(user_id)
-        response = create_message_response("El usuario ha sido desbloqueado")
-        return response
-
-    def get_users_list(self):
-        return self.user_dao.get_users_list()
-
-    def login(self, user_id):
-        blocked = self.user_dao.get_blocking_status(user_id)
-        if blocked:
-            raise UserBlockedException()
-        return self.get_user(user_id)
 
     @staticmethod
     def validate_user_name(user_name):
@@ -80,10 +30,43 @@ class UserHandler:
         if not is_email(user_email):
             raise InvalidEmailException(user_email)
 
+    def get_user(self, user_id):
+        if user_id:
+            response = self.user_dao.get_user(user_id)
+        else:
+            response = self.user_dao.get_users_list()
+        return response
 
+    def update_user(self, user_id, user_name, user_lastname, user_email, user_blocked):
+        user = self.get_user(user_id)[0]
 
+        if user_blocked is None:
+            user_blocked = user["blocked"]
 
+        if user["blocked"] and user_blocked != False:
+            raise UserBlockedException()
 
+        if user_name:
+            self.validate_user_name(user_name)
+        else:
+            user_name = user["name"]
 
+        if user_lastname:
+            self.validate_user_lastname(user_lastname)
+        else:
+            user_lastname = user["lastname"]
 
+        if user_email:
+            self.validate_user_email(user_email)
+        else:
+            user_email = user["email"]
 
+        self.user_dao.update_user(user_id,
+                                  user_name,
+                                  user_lastname,
+                                  user_email,
+                                  user_blocked
+                                  )
+
+        response = create_message_response("El usuario fue actualizado con éxito")
+        return response
