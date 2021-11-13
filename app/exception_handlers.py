@@ -33,7 +33,7 @@ async def user_invalid_user_id_exception_handler(request: Request, exc: InvalidU
 
 
 async def user_blocked_exception_handler(request: Request, exc: UserBlockedException):
-    return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content=create_message_response(exc.message))
+    return JSONResponse(status_code=status.HTTP_423_LOCKED, content=create_message_response(exc.message))
 
 
 def add_user_exception_handlers(app: FastAPI):

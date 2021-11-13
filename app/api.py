@@ -36,7 +36,7 @@ async def create_user(
 async def get_user(
         user_id: Optional[str] = None,
 ):
-    return user_handler.get_user(user_id)
+    return user_handler.get_user(user_id, True)
 
 
 # UPDATE

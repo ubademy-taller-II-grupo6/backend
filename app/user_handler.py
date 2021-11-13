@@ -30,21 +30,20 @@ class UserHandler:
         if not is_email(user_email):
             raise InvalidEmailException(user_email)
 
-    def get_user(self, user_id):
+    def get_user(self, user_id, check_blocked):
         if user_id:
             response = self.user_dao.get_user(user_id)
+            if check_blocked and response[0]['blocked']:
+                raise UserBlockedException()
         else:
             response = self.user_dao.get_users_list()
         return response
 
     def update_user(self, user_id, user_name, user_lastname, user_email, user_blocked):
-        user = self.get_user(user_id)[0]
+        user = self.get_user(user_id, False)[0]
 
         if user_blocked is None:
             user_blocked = user["blocked"]
-
-        if user["blocked"] and user_blocked != False:
-            raise UserBlockedException()
 
         if user_name:
             self.validate_user_name(user_name)
