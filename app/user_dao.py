@@ -4,7 +4,8 @@ import psycopg2
 
 from psycopg2.extras import RealDictCursor
 
-from app.exceptions import InvalidUserIdException, UserAlreadyExistException
+from app.exceptions import InvalidUserIdException, UserAlreadyExistException, InvalidSubscriptionIDException, \
+    InvalidOperationException
 
 
 class UserDao:
@@ -21,22 +22,22 @@ class UserDao:
         self.connection = connection
 
     # USER DATA
-    def create_user(self, user_name, user_lastname, user_email):
+    def create_user(self, id, name, lastname, email, latitude, longitude):
         cur = self.connection.cursor()
-        query = "INSERT INTO users(user_name,user_lastname,user_email,user_blocked) VALUES (%s,%s,%s,%s)"
+        query = "INSERT INTO users(id,name,lastname,email,latitude,longitude,blocked, subscription) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
         try:
-            cur.execute(query, (user_name, user_lastname, user_email, False))
+            cur.execute(query, (id, name, lastname, email, latitude, longitude, False, 'FREE'))
             self.connection.commit()
         except psycopg2.errors.UniqueViolation:
             self.connection.rollback()
-            raise UserAlreadyExistException(user_email)
+            raise UserAlreadyExistException()
         return True
 
     def get_user(self, user_id):
         cur = self.connection.cursor()
-        query = "SELECT user_id,user_name,user_lastname, user_email, user_blocked" \
+        query = "SELECT *" \
                 " FROM users " \
-                "where user_id = %s"
+                "where id = %s"
         cur.execute(query, (user_id,))
         data = cur.fetchone()
         if not data:
@@ -45,7 +46,7 @@ class UserDao:
 
     def get_users_list(self):
         cur = self.connection.cursor()
-        query = "SELECT user_id, user_name, user_lastname, user_email, user_blocked" \
+        query = "SELECT *" \
                 " FROM users"
         cur.execute(query)
         data = cur.fetchall()
@@ -54,21 +55,59 @@ class UserDao:
             users.append(self.parse_user(row))
         return users
 
-    def update_user(self, user_id, user_name, user_lastname, user_email, user_blocked):
+    def update_user(self, id, name, lastname, email, latitude, longitude, blocked, subscription):
         cur = self.connection.cursor()
-        query = "UPDATE users " \
-                "SET user_name = %s, user_lastname = %s, user_email = %s, user_blocked= %s " \
-                "WHERE user_id = %s"
-        cur.execute(query, (user_name, user_lastname, user_email, user_blocked, user_id))
+        query = f"""UPDATE users 
+                    SET name = %s, lastname = %s, email = %s, latitude= %s,  longitude= %s, blocked = %s, 
+                    subscription = %s\
+                    WHERE id = %s"""
+        try:
+            cur.execute(query, (name, lastname, email, latitude, longitude, blocked, subscription, id))
+        except:
+            self.connection.rollback()
+            raise InvalidOperationException("Los datos ingresados no son válidos")
         self.connection.commit()
+
+    def get_subscription_conditions(self, subscription_id):
+        cur = self.connection.cursor()
+        query = f"""SELECT conditions FROM subscriptions WHERE id = %s"""
+        cur.execute(query, (subscription_id,))
+        data = cur.fetchone()
+        if not data:
+            raise InvalidSubscriptionIDException(subscription_id)
+        return data
+
+    def get_subscriptions(self):
+        cur = self.connection.cursor()
+        query = f"""SELECT * FROM subscriptions"""
+        cur.execute(query)
+        data = cur.fetchall()
+        response = []
+        for subscription in data:
+            response.append(self.parse_subscription(subscription))
+        return response
 
     @staticmethod
     def parse_user(data):
         user = {
-            "id": data["user_id"],
-            "name": data['user_name'],
-            "lastname": data['user_lastname'],
-            "email": data['user_email'],
-            "blocked": data["user_blocked"]
+            "id": data["id"],
+            "name": data['name'],
+            "lastname": data['lastname'],
+            "email": data['email'],
+            "latitude": data['latitude'],
+            "longitude": data['longitude'],
+            "blocked": data["blocked"],
+            "subscription":  data["subscription"]
         }
         return user
+
+    @staticmethod
+    def parse_subscription(data):
+        subscription = {
+            "subscription_id" : data["id"],
+            "conditions" : data["conditions"]
+        }
+        return subscription
+
+
+

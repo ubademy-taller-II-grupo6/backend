@@ -23,8 +23,8 @@ class InvalidLastnameException(Exception):
 
 
 class UserAlreadyExistException(Exception):
-    def __init__(self, user_email: str):
-        self.message = f'Ya existe un usuario registrado con el email  {user_email}'
+    def __init__(self):
+        self.message = f'El ususario ya existe'
 
     def __str__(self):
         return self.message
@@ -46,8 +46,17 @@ class UserBlockedException(Exception):
         return self.message
 
 
+class InvalidSubscriptionIDException(Exception):
+    def __init__(self, subscription_id):
+        self.message = f'No existe ninguna suscripción con el id {subscription_id}'
+
+    def __str__(self):
+        return self.message
 
 
+class InvalidOperationException(Exception):
+    def __init__(self, message):
+        self.message = f'{message}'
 
-
-
+    def __str__(self):
+        return self.message

@@ -7,65 +7,75 @@ class UserHandler:
     def __init__(self, user_dao):
         self.user_dao = user_dao
 
-    def create_user(self, user_name, user_lastname, user_email):
-        self.validate_user_name(user_name)
-        self.validate_user_lastname(user_lastname)
-        self.validate_user_email(user_email)
-        self.user_dao.create_user(user_name, user_lastname, user_email)
+    def create_user(self, id, name, lastname, email, latitude, longitude):
+        self.validate_user_name(name)
+        self.validate_user_lastname(lastname)
+        self.validate_user_email(email)
+        self.user_dao.create_user(id, name, lastname, email, latitude, longitude)
         response = create_message_response("El usuario se creó con éxito")
         return response
 
     @staticmethod
-    def validate_user_name(user_name):
-        if not is_text(user_name):
-            raise InvalidNameException(user_name)
+    def validate_user_name(name):
+        if not is_text(name):
+            raise InvalidNameException(name)
 
     @staticmethod
-    def validate_user_lastname(user_lastname):
-        if not is_text(user_lastname):
-            raise InvalidLastnameException(user_lastname)
+    def validate_user_lastname(lastname):
+        if not is_text(lastname):
+            raise InvalidLastnameException(lastname)
 
     @staticmethod
-    def validate_user_email(user_email):
-        if not is_email(user_email):
-            raise InvalidEmailException(user_email)
+    def validate_user_email(email):
+        if not is_email(email):
+            raise InvalidEmailException(email)
 
-    def get_user(self, user_id, check_blocked):
-        if user_id:
-            response = self.user_dao.get_user(user_id)
+    def get_user(self, id, check_blocked):
+        if id:
+            response = self.user_dao.get_user(id)
             if check_blocked and response[0]['blocked']:
                 raise UserBlockedException()
         else:
             response = self.user_dao.get_users_list()
         return response
 
-    def update_user(self, user_id, user_name, user_lastname, user_email, user_blocked):
-        user = self.get_user(user_id, False)[0]
+    def update_user(self, id, name, lastname, email, latitude, longitude, blocked, subscription):
+        user = self.get_user(id, False)[0]
 
-        if user_blocked is None:
-            user_blocked = user["blocked"]
+        if blocked is None:
+            blocked = user["blocked"]
 
-        if user_name:
-            self.validate_user_name(user_name)
+        if name:
+            self.validate_user_name(name)
         else:
-            user_name = user["name"]
+            name = user["name"]
 
-        if user_lastname:
-            self.validate_user_lastname(user_lastname)
+        if lastname:
+            self.validate_user_lastname(lastname)
         else:
-            user_lastname = user["lastname"]
+            lastname = user["lastname"]
 
-        if user_email:
-            self.validate_user_email(user_email)
+        if email:
+            self.validate_user_email(email)
         else:
-            user_email = user["email"]
+            email = user["email"]
 
-        self.user_dao.update_user(user_id,
-                                  user_name,
-                                  user_lastname,
-                                  user_email,
-                                  user_blocked
-                                  )
+        if not subscription:
+            subscription = user["subscription"]
+
+        if not latitude:
+            latitude = user['latitude']
+
+        if not longitude:
+            longitude = user['longitude']
+
+        self.user_dao.update_user(id, name, lastname, email, latitude, longitude, blocked, subscription)
 
         response = create_message_response("El usuario fue actualizado con éxito")
         return response
+
+    def get_subscription_conditions(self, subscription_id):
+        return self.user_dao.get_subscription_conditions(subscription_id)
+
+    def get_subscriptions(self):
+        return self.user_dao.get_subscriptions()
